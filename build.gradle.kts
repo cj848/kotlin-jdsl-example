@@ -26,7 +26,7 @@ dependencies {
 
     // just add these dependencies for use kotlin-jdsl
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:1.0.0.RELEASE")
+    implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:1.0.1.RELEASE")
 }
 
 tasks.withType<KotlinCompile> {
