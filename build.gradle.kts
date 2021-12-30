@@ -14,7 +14,6 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
-    maven(url = "https://oss.sonatype.org/content/repositories/releases/")
 }
 
 dependencies {
