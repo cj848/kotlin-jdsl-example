@@ -17,14 +17,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:1.0.0.RELEASE")
     implementation("com.h2database:h2")
+
+    // just add these dependencies for use kotlin-jdsl
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:1.0.0.RELEASE")
 }
 
 tasks.withType<KotlinCompile> {
