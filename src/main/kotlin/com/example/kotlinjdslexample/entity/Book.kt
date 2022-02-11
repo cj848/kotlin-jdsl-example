@@ -12,4 +12,19 @@ data class Book(
 
     @Column
     val name: String,
+
+    @Embedded
+    val meta: BookMeta
+)
+
+@Embeddable
+data class BookMeta(
+    var isbn10: String,
+    var isbn13: String,
+    var subTitle: String,
+    var seriesInformation: String,
+    var author: String,
+    var contributors: String,
+    var publisher: String,
+    var keywords: String
 )

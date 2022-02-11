@@ -1,10 +1,11 @@
 package com.example.kotlinjdslexample
 
 import com.example.kotlinjdslexample.entity.Book
+import com.example.kotlinjdslexample.entity.BookMeta
 import com.linecorp.kotlinjdsl.querydsl.expression.col
-import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
-import com.linecorp.kotlinjdsl.spring.data.listQuery
-import com.linecorp.kotlinjdsl.spring.data.singleQuery
+import com.linecorp.kotlinjdsl.querydsl.from.associate
+import com.linecorp.kotlinjdsl.querydsl.where.WhereDsl
+import com.linecorp.kotlinjdsl.spring.data.*
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -36,6 +37,20 @@ class BookController(
 
         return ResponseEntity.ok(books)
     }
+
+    @PutMapping
+    fun update(@RequestBody spec: BookService.UpdateBookSpec): ResponseEntity<Int> {
+        val updatedRow = bookService.update(spec)
+
+        return ResponseEntity.ok(updatedRow)
+    }
+
+    @DeleteMapping
+    fun delete(@RequestBody spec: BookService.FindBookSpec): ResponseEntity<Int> {
+        val updatedRow = bookService.delete(spec)
+
+        return ResponseEntity.ok(updatedRow)
+    }
 }
 
 @Service
@@ -45,7 +60,7 @@ class BookService(
     private val queryFactory: SpringDataQueryFactory,
 ) {
     fun create(spec: CreateBookSpec): Book {
-        return Book(name = spec.name).also {
+        return Book(name = spec.name, meta = spec.meta).also {
             entityManager.persist(it)
         }
     }
@@ -62,15 +77,43 @@ class BookService(
         return queryFactory.listQuery {
             select(entity(Book::class))
             from(entity(Book::class))
-            where(col(Book::name).like("%${spec.name}%"))
+            where(findSpec(spec))
         }
     }
 
+    fun update(spec: UpdateBookSpec): Int {
+        return queryFactory.updateQuery<Book> {
+            associate(Book::meta)
+            where(findSpec(spec.findBookSpec))
+            set(col(Book::name), spec.name)
+        }.executeUpdate()
+    }
+
+    fun delete(spec: FindBookSpec): Int {
+        return queryFactory.deleteQuery<Book> {
+            associate(Book::meta)
+            where(findSpec(spec))
+        }.executeUpdate()
+    }
+
+    private fun WhereDsl.findSpec(spec: FindBookSpec) =
+        and(
+            col(Book::name).like("%${spec.name}%"),
+            spec.publisher?.let { col(BookMeta::publisher).equal(spec.publisher) }
+        )
+
     data class CreateBookSpec(
-        val name: String
+        val name: String,
+        val meta: BookMeta
     )
 
     data class FindBookSpec(
+        val name: String,
+        val publisher: String? = null
+    )
+
+    data class UpdateBookSpec(
+        val findBookSpec: FindBookSpec,
         val name: String
     )
 }

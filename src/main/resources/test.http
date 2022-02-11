@@ -1,0 +1,64 @@
+### insert book
+POST localhost:8080/api/v1/books
+content-type: application/json
+
+{
+  "name": "The Lord Of The Rings Illustrated Edition",
+  "meta": {
+    "isbn10": "0358653037",
+    "isbn13": "978-0358653035",
+    "subTitle": "Illustrated Edition",
+    "seriesInformation": "Load of The Rings",
+    "author": "J.R.R. Tolkien",
+    "contributors": "",
+    "publisher": "William Morrow; Illustrated edition (November 16, 2021)",
+    "keywords": "Load of The Rings,Illustrated Edition"
+  }
+}
+
+### insert book 1
+POST localhost:8080/api/v1/books
+content-type: application/json
+
+{
+  "name": "The Fellowship Of The Ring: Being the First Part of The Lord of the Rings (The Lord of the Rings, 1)",
+  "meta": {
+    "isbn10": "0395489318",
+    "isbn13": "978-0395489314",
+    "subTitle": "Being the First Part of The Lord of the Rings (The Lord of the Rings, 1)",
+    "seriesInformation": "Load of The Rings",
+    "author": "J.R.R. Tolkien",
+    "contributors": "",
+    "publisher": "William Morrow; Subsequent,Reissue edition (March 3, 1988)",
+    "keywords": "Load of The Rings,Being the First Part of The Lord of the Rings"
+  }
+}
+
+### find by name
+GET localhost:8080/api/v1/books?name=Of%20The%20Ring
+
+### update book 1
+PUT localhost:8080/api/v1/books
+content-type: application/json
+
+{
+  "findBookSpec": {
+    "name": "Fellowship"
+  },
+  "name": "ChangedName"
+}
+
+### find by name
+GET localhost:8080/api/v1/books?name=ChangedName
+
+### delete by name
+DELETE localhost:8080/api/v1/books
+content-type: application/json
+
+{
+  "name": "Changed",
+  "publisher": "William Morrow; Subsequent,Reissue edition (March 3, 1988)"
+}
+
+### find by name
+GET localhost:8080/api/v1/books?name=ChangedName
