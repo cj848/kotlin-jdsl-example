@@ -131,6 +131,10 @@ class BookService(
         }.executeUpdate()
     }
 
+    /**
+     * if you want reuse Predicates, extract Expressions and make an Extension like this methods
+     * WhereDsl.xxxx
+     */
     private fun WhereDsl.findSpec(spec: FindBookSpec) =
         and(
             col(Book::name).like("%${spec.name}%"),
