@@ -6,6 +6,8 @@ import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.querydsl.from.associate
 import com.linecorp.kotlinjdsl.querydsl.where.WhereDsl
 import com.linecorp.kotlinjdsl.spring.data.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,6 +36,17 @@ class BookController(
     @GetMapping
     fun findAll(@RequestParam("name") name: String): ResponseEntity<List<Book>> {
         val books = bookService.findAll(BookService.FindBookSpec(name = name))
+
+        return ResponseEntity.ok(books)
+    }
+
+    @GetMapping("/paging")
+    fun findAllByPaging(
+        pageable: Pageable,
+        @RequestParam("name") name: String,
+        @RequestParam("publisher") publisher: String? = null
+    ): ResponseEntity<Page<Book>> {
+        val books = bookService.findAll(BookService.FindBookSpec(name = name, publisher = publisher), pageable)
 
         return ResponseEntity.ok(books)
     }
@@ -101,6 +114,14 @@ class BookService(
             col(Book::name).like("%${spec.name}%"),
             spec.publisher?.let { col(BookMeta::publisher).equal(spec.publisher) }
         )
+
+    fun findAll(spec: FindBookSpec, pageable: Pageable): Page<Book> {
+        return queryFactory.pageQuery(pageable) {
+            select(entity(Book::class))
+            from(entity(Book::class))
+            where(findSpec(spec))
+        }
+    }
 
     data class CreateBookSpec(
         val name: String,

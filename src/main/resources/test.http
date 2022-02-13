@@ -37,6 +37,10 @@ content-type: application/json
 ### find by name
 GET localhost:8080/api/v1/books?name=Of%20The%20Ring
 
+### find by name & paging
+GET localhost:8080/api/v1/books/paging?name=Of%20The%20Ring&number=0&size=1
+
+
 ### update book 1
 PUT localhost:8080/api/v1/books
 content-type: application/json
