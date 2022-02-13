@@ -33,6 +33,13 @@ class BookController(
         return ResponseEntity.ok(book)
     }
 
+    @GetMapping("/{bookId}/toVO")
+    fun findByIdToVO(@PathVariable bookId: Long): ResponseEntity<NameIsbnVO> {
+        val book = bookService.findByIdToVO(bookId)
+
+        return ResponseEntity.ok(book)
+    }
+
     @GetMapping
     fun findAll(@RequestParam("name") name: String): ResponseEntity<List<Book>> {
         val books = bookService.findAll(BookService.FindBookSpec(name = name))
@@ -66,6 +73,12 @@ class BookController(
     }
 }
 
+data class NameIsbnVO(
+    val name: String,
+    val isbn10: String,
+    val isbn13: String
+)
+
 @Service
 @Transactional
 class BookService(
@@ -82,6 +95,15 @@ class BookService(
         return queryFactory.singleQuery {
             select(entity(Book::class))
             from(entity(Book::class))
+            where(col(Book::id).equal(id))
+        }
+    }
+
+    fun findByIdToVO(id: Long): NameIsbnVO {
+        return queryFactory.singleQuery {
+            selectMulti(col(Book::name), col(BookMeta::isbn10), col(BookMeta::isbn13))
+            from(entity(Book::class))
+            associate(Book::meta)
             where(col(Book::id).equal(id))
         }
     }

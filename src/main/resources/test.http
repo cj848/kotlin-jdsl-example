@@ -37,6 +37,10 @@ content-type: application/json
 ### find by name
 GET localhost:8080/api/v1/books?name=Of%20The%20Ring
 
+### find by id & convert to VO
+GET localhost:8080/api/v1/books/1/toVO
+
+
 ### find by name & paging
 GET localhost:8080/api/v1/books/paging?name=Of%20The%20Ring&number=0&size=1
 
