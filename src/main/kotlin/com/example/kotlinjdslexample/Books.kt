@@ -132,7 +132,7 @@ class BookService(
     }
 
     /**
-     * if you want reuse Predicates, extract Expressions and make an Extension like this methods
+     * if you want reuse Predicates, extract Expressions and make an Extension like this method
      * WhereDsl.xxxx
      */
     private fun WhereDsl.findSpec(spec: FindBookSpec) =
