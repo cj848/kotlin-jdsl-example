@@ -1,5 +1,5 @@
 ### insert book
-POST localhost:8080/api/v1/books
+POST {{base}}
 content-type: application/json
 
 {
@@ -17,7 +17,7 @@ content-type: application/json
 }
 
 ### insert book 1
-POST localhost:8080/api/v1/books
+POST {{base}}
 content-type: application/json
 
 {
@@ -35,18 +35,18 @@ content-type: application/json
 }
 
 ### find by name
-GET localhost:8080/api/v1/books?name=Of%20The%20Ring
+GET {{base}}?name=Of%20The%20Ring
 
 ### find by id & convert to VO
-GET localhost:8080/api/v1/books/1/toVO
+GET {{base}}/1/toVO
 
 
 ### find by name & paging
-GET localhost:8080/api/v1/books/paging?name=Of%20The%20Ring&number=0&size=1
+GET {{base}}/paging?name=Of%20The%20Ring&number=0&size=1
 
 
 ### update book 1
-PUT localhost:8080/api/v1/books
+PUT {{base}}
 content-type: application/json
 
 {
@@ -57,10 +57,10 @@ content-type: application/json
 }
 
 ### find by name
-GET localhost:8080/api/v1/books?name=ChangedName
+GET {{base}}?name=ChangedName
 
 ### delete by name
-DELETE localhost:8080/api/v1/books
+DELETE {{base}}
 content-type: application/json
 
 {
@@ -69,4 +69,4 @@ content-type: application/json
 }
 
 ### find by name
-GET localhost:8080/api/v1/books?name=ChangedName
+GET {{base}}?name=ChangedName

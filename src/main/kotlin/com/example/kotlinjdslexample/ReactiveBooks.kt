@@ -6,6 +6,10 @@ import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.querydsl.from.associate
 import com.linecorp.kotlinjdsl.querydsl.where.WhereDsl
 import com.linecorp.kotlinjdsl.spring.data.*
+import com.linecorp.kotlinjdsl.spring.data.deleteQuery
+import com.linecorp.kotlinjdsl.spring.data.reactive.query.*
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import org.hibernate.reactive.mutiny.Mutiny.SessionFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
@@ -15,40 +19,40 @@ import org.springframework.web.bind.annotation.*
 import javax.persistence.EntityManager
 
 @RestController
-@RequestMapping("/api/v1/books")
-class BookController(
-    private val bookService: BookService,
+@RequestMapping("/api/v1/books/reactive")
+class ReactiveBookController(
+    private val bookService: ReactiveBookService,
 ) {
     @PostMapping
-    fun createBook(@RequestBody spec: CreateBookSpec): ResponseEntity<Long> {
+    suspend fun createBook(@RequestBody spec: CreateBookSpec): ResponseEntity<Long> {
         val book = bookService.create(spec)
 
         return ResponseEntity.ok(book.id)
     }
 
     @GetMapping("/{bookId}")
-    fun findById(@PathVariable bookId: Long): ResponseEntity<Book> {
+    suspend fun findById(@PathVariable bookId: Long): ResponseEntity<Book> {
         val book = bookService.findById(bookId)
 
         return ResponseEntity.ok(book)
     }
 
     @GetMapping("/{bookId}/toVO")
-    fun findByIdToVO(@PathVariable bookId: Long): ResponseEntity<NameIsbnVO> {
+    suspend fun findByIdToVO(@PathVariable bookId: Long): ResponseEntity<NameIsbnVO> {
         val book = bookService.findByIdToVO(bookId)
 
         return ResponseEntity.ok(book)
     }
 
     @GetMapping
-    fun findAll(@RequestParam("name") name: String): ResponseEntity<List<Book>> {
+    suspend fun findAll(@RequestParam("name") name: String): ResponseEntity<List<Book>> {
         val books = bookService.findAll(FindBookSpec(name = name))
 
         return ResponseEntity.ok(books)
     }
 
     @GetMapping("/paging")
-    fun findAllByPaging(
+    suspend fun findAllByPaging(
         pageable: Pageable,
         @RequestParam("name") name: String,
         @RequestParam("publisher") publisher: String? = null
@@ -59,14 +63,14 @@ class BookController(
     }
 
     @PutMapping
-    fun update(@RequestBody spec: UpdateBookSpec): ResponseEntity<Int> {
+    suspend fun update(@RequestBody spec: UpdateBookSpec): ResponseEntity<Int> {
         val updatedRow = bookService.update(spec)
 
         return ResponseEntity.ok(updatedRow)
     }
 
     @DeleteMapping
-    fun delete(@RequestBody spec: FindBookSpec): ResponseEntity<Int> {
+    suspend fun delete(@RequestBody spec: FindBookSpec): ResponseEntity<Int> {
         val updatedRow = bookService.delete(spec)
 
         return ResponseEntity.ok(updatedRow)
@@ -75,17 +79,18 @@ class BookController(
 
 @Service
 @Transactional
-class BookService(
-    private val entityManager: EntityManager,
-    private val queryFactory: SpringDataQueryFactory,
+class ReactiveBookService(
+    private val entityManager: SessionFactory,
+    private val queryFactory: SpringDataHibernateMutinyReactiveQueryFactory,
 ) {
-    fun create(spec: CreateBookSpec): Book {
+    suspend fun create(spec: CreateBookSpec): Book {
         return Book(name = spec.name, meta = spec.meta).also {
-            entityManager.persist(it)
+            entityManager.withSession { session -> session.persist(it).flatMap { session.flush() } }
+                .awaitSuspending()
         }
     }
 
-    fun findById(id: Long): Book {
+    suspend fun findById(id: Long): Book {
         return queryFactory.singleQuery {
             select(entity(Book::class))
             from(entity(Book::class))
@@ -93,7 +98,7 @@ class BookService(
         }
     }
 
-    fun findByIdToVO(id: Long): NameIsbnVO {
+    suspend fun findByIdToVO(id: Long): NameIsbnVO {
         return queryFactory.singleQuery {
             selectMulti(col(Book::name), col(BookMeta::isbn10), col(BookMeta::isbn13))
             from(entity(Book::class))
@@ -102,7 +107,7 @@ class BookService(
         }
     }
 
-    fun findAll(spec: FindBookSpec): List<Book> {
+    suspend fun findAll(spec: FindBookSpec): List<Book> {
         return queryFactory.listQuery {
             select(entity(Book::class))
             from(entity(Book::class))
@@ -110,19 +115,19 @@ class BookService(
         }
     }
 
-    fun update(spec: UpdateBookSpec): Int {
+    suspend fun update(spec: UpdateBookSpec): Int {
         return queryFactory.updateQuery<Book> {
             associate(Book::meta)
             where(findSpec(spec.findBookSpec))
             set(col(Book::name), spec.name)
-        }.executeUpdate()
+        }
     }
 
-    fun delete(spec: FindBookSpec): Int {
+    suspend fun delete(spec: FindBookSpec): Int {
         return queryFactory.deleteQuery<Book> {
             associate(Book::meta)
             where(findSpec(spec))
-        }.executeUpdate()
+        }
     }
 
     /**
@@ -135,12 +140,11 @@ class BookService(
             spec.publisher?.let { col(BookMeta::publisher).equal(spec.publisher) }
         )
 
-    fun findAll(spec: FindBookSpec, pageable: Pageable): Page<Book> {
+    suspend fun findAll(spec: FindBookSpec, pageable: Pageable): Page<Book> {
         return queryFactory.pageQuery(pageable) {
             select(entity(Book::class))
             from(entity(Book::class))
             where(findSpec(spec))
         }
     }
-
 }
