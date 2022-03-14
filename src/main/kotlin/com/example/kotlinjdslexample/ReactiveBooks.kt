@@ -5,8 +5,6 @@ import com.example.kotlinjdslexample.entity.BookMeta
 import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.querydsl.from.associate
 import com.linecorp.kotlinjdsl.querydsl.where.WhereDsl
-import com.linecorp.kotlinjdsl.spring.data.*
-import com.linecorp.kotlinjdsl.spring.data.deleteQuery
 import com.linecorp.kotlinjdsl.spring.data.reactive.query.*
 import io.smallrye.mutiny.coroutines.awaitSuspending
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory
@@ -16,7 +14,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
-import javax.persistence.EntityManager
 
 @RestController
 @RequestMapping("/api/v1/books/reactive")
@@ -80,12 +77,12 @@ class ReactiveBookController(
 @Service
 @Transactional
 class ReactiveBookService(
-    private val entityManager: SessionFactory,
+    private val sessionFactory: SessionFactory,
     private val queryFactory: SpringDataHibernateMutinyReactiveQueryFactory,
 ) {
     suspend fun create(spec: CreateBookSpec): Book {
         return Book(name = spec.name, meta = spec.meta).also {
-            entityManager.withSession { session -> session.persist(it).flatMap { session.flush() } }
+            sessionFactory.withSession { session -> session.persist(it).flatMap { session.flush() } }
                 .awaitSuspending()
         }
     }
