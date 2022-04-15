@@ -27,10 +27,7 @@ class ReactiveQueryConfiguration {
             .unwrap(Mutiny.SessionFactory::class.java)
     }
 
-    class ReactivePersistenceInfo(
-        private val persistenceUnitInfo: PersistenceUnitInfo,
-        private val jpaPropertyMap: Map<String, Any>
-    ) :
+    class ReactivePersistenceInfo(persistenceUnitInfo: PersistenceUnitInfo, jpaPropertyMap: Map<String, Any>) :
         PersistenceUnitInfo by persistenceUnitInfo {
 
         private val internalProps = Properties(persistenceUnitInfo.properties).apply {
