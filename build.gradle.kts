@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.6.4"
+    id("org.springframework.boot") version "2.6.6"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
-    kotlin("plugin.jpa") version "1.6.10"
+    kotlin("jvm") version "1.6.20"
+    kotlin("plugin.spring") version "1.6.20"
+    kotlin("plugin.jpa") version "1.6.20"
 }
 
 group = "com.example"
@@ -38,12 +38,12 @@ dependencies {
 
     // reactive
     implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-hibernate-reactive:$jdslVersion")
-    implementation("org.hibernate.reactive:hibernate-reactive-core:1.1.3.Final")
+    implementation("org.hibernate.reactive:hibernate-reactive-core:1.1.4.Final")
     implementation("io.smallrye.reactive:mutiny-kotlin:1.4.0")
 
     // h2 db reactive
     implementation("io.agroal:agroal-pool:1.14")
-    implementation("io.vertx:vertx-jdbc-client:4.2.5")
+    implementation("io.vertx:vertx-jdbc-client:4.2.7")
 }
 
 tasks.withType<KotlinCompile> {
