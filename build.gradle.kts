@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.6.6"
+    id("org.springframework.boot") version "2.6.7"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.20"
-    kotlin("plugin.spring") version "1.6.20"
-    kotlin("plugin.jpa") version "1.6.20"
+    kotlin("jvm") version "1.6.21"
+    kotlin("plugin.spring") version "1.6.21"
+    kotlin("plugin.jpa") version "1.6.21"
 }
 
 group = "com.example"
@@ -26,11 +26,11 @@ dependencies {
 
     // just add these dependencies for use kotlin-jdsl
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    val jdslVersion = "2.0.1.RELEASE"
+    val jdslVersion = "2.0.2.RELEASE"
     implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:$jdslVersion")
 
     // coroutine
-    val coroutineVersion = "1.6.0"
+    val coroutineVersion = "1.6.1"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
@@ -42,7 +42,7 @@ dependencies {
     implementation("io.smallrye.reactive:mutiny-kotlin:1.4.0")
 
     // h2 db reactive
-    implementation("io.agroal:agroal-pool:1.14")
+    implementation("io.agroal:agroal-pool:1.15")
     implementation("io.vertx:vertx-jdbc-client:4.2.7")
 }
 
