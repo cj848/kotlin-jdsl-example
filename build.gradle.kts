@@ -22,7 +22,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    implementation("com.h2database:h2")
 
     // just add these dependencies for use kotlin-jdsl
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -43,6 +42,7 @@ dependencies {
 
     // h2 db reactive
     implementation("io.agroal:agroal-pool:2.0")
+    implementation("com.h2database:h2")
     implementation("io.vertx:vertx-jdbc-client:4.3.1")
 }
 
