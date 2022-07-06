@@ -25,7 +25,7 @@ dependencies {
 
     // just add these dependencies for use kotlin-jdsl
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    val jdslVersion = "2.0.3.RELEASE"
+    val jdslVersion = "2.0.4.RELEASE"
     implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:$jdslVersion")
 
     // coroutine
