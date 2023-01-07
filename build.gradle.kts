@@ -1,16 +1,15 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.7.1"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.7.0"
-    kotlin("plugin.spring") version "1.7.0"
-    kotlin("plugin.jpa") version "1.7.0"
+    id("org.springframework.boot") version "2.7.7"
+    id("io.spring.dependency-management") version "1.0.13.RELEASE"
+    kotlin("jvm") version "1.8.0"
+    kotlin("plugin.spring") version "1.8.0"
+    kotlin("plugin.jpa") version "1.8.0"
 }
 
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
@@ -25,11 +24,11 @@ dependencies {
 
     // just add these dependencies for use kotlin-jdsl
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    val jdslVersion = "2.0.4.RELEASE"
+    val jdslVersion = "2.1.0.RELEASE"
     implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:$jdslVersion")
 
     // coroutine
-    val coroutineVersion = "1.6.3"
+    val coroutineVersion = "1.6.4"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
@@ -37,22 +36,18 @@ dependencies {
 
     // reactive
     implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-hibernate-reactive:$jdslVersion")
-    implementation("org.hibernate.reactive:hibernate-reactive-core:1.1.6.Final")
-    implementation("io.smallrye.reactive:mutiny-kotlin:1.6.0")
+    implementation("org.hibernate.reactive:hibernate-reactive-core:1.1.9.Final")
+    implementation("io.smallrye.reactive:mutiny-kotlin:2.0.0")
 
     // h2 db reactive
     implementation("io.agroal:agroal-pool:2.0")
     implementation("com.h2database:h2")
-    implementation("io.vertx:vertx-jdbc-client:4.3.1")
+    implementation("io.vertx:vertx-jdbc-client:4.3.7")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
-    }
+kotlin {
+    jvmToolchain(17)
 }
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
